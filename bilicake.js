@@ -97,7 +97,8 @@ function api_get_cid(aid, page) {
 }
 
 
-function api_get_url(cid, quality = 4) {
+function api_get_url(cid, quality) {
+	if (typeof quality == "undefined") var quality = 4;
 	var req_url = "http://interface.bilibili.com/playurl?"+sign_req("appkey="+appkey+"&cid="+cid+"&type=mp4&quality="+quality);
 	console.log(req_url);
 	GM_xmlhttpRequest({
