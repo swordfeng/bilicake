@@ -22,6 +22,9 @@ cakecss.setAttribute("type","text/css");
 cakecss.setAttribute("href","http://swordfeng.github.io/ABP/css/base.css");
 document.getElementsByTagName("head")[0].appendChild(cakecss);
 
+try {
+	document.getElementsByClassName("z")[0].style["z-index"]="10020";
+} catch (e) {}
 
 var ABP = {
 	"version":"0.8.0.1-sMod_bili"
