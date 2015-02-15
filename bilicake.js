@@ -3,7 +3,7 @@
 // @namespace   bilicake
 // @desription	black tehnology
 // @include     *bilibili.com*
-// @version     0.01
+// @version     0.02
 // @run-at      document-end
 // @grant       GM_xmlhttpRequest
 // @require     http://swordfeng.github.io/ABP/js/CommentCoreLibrary.min.js
@@ -11,7 +11,7 @@
 // @require     http://swordfeng.github.io/ABP/js/ABPRestyle.js
 // @require     http://swordfeng.github.io/ABP/js/ABPMobile.js
 // @require     http://swordfeng.github.io/ABP/js/ABPLibxml.js
-// @require     http://swordfeng.github.io/ABP/js/ABPlayer.js
+// @require     http://swordfeng.github.io/ABP/js/ABPlayer.js?id=1
 // ==/UserScript==
 
 
@@ -23,9 +23,10 @@ cakecss.setAttribute("type","text/css");
 cakecss.setAttribute("href","http://swordfeng.github.io/ABP/css/base.css");
 document.getElementsByTagName("head")[0].appendChild(cakecss);
 
-try {
-	document.getElementsByClassName("z")[0].style["z-index"]="10020";
-} catch (e) {}
+cakecss = document.createElement('style');
+cakecss.setAttribute("type","text/css");
+cakecss.innerHTML = ".ABP-NoScroll #index-nav { display:none!important; }";
+document.getElementsByTagName("head")[0].appendChild(cakecss);
 
 
 var appkey = "c1b107428d337928";
@@ -37,6 +38,7 @@ var aid_array = aid_reg.exec(url);
 
 var aid = aid_array === null ? '' : aid_array[1]; //aid
 var page = aid_array === null ? '1' : typeof(aid_array[2]) == 'undefined' ? '1' : aid_array[2]; //分p
+var cid = "";
 
 function sign_req(str) {
 	return str+"&sign="+hex_md5(str+secretkey);
@@ -86,16 +88,20 @@ function api_get_cid(aid, page) {
 				for (var i=0;i<list.length;++i)
 					if (list[i].page == p) lp = list[i];
 				if (lp === null) lp = list[0]; //针对某些aid只有一个cid但是有分P的情况
-				var cid = lp.cid;
+				cid = lp.cid;
 				var type = lp.type;
 				var vid = lp.vid;
 				console.log("aid: "+aid+" cid: "+cid+" type: "+type+" vid: "+vid);
-				if (type != "letv" && type != "mletv") api_get_url(cid); 
+				if (type == "vupload") api_get_url(cid); 
 			}
 		}
 	});
 }
 
+
+window.replacePlayer = function() {
+	if (cid != "") api_get_url(cid);
+};
 
 function api_get_url(cid, quality) {
 	if (typeof quality == "undefined") var quality = 4;
@@ -107,7 +113,11 @@ function api_get_url(cid, quality) {
 		synchronous: false,
 		onload: function(responseDetails) {
 			if (responseDetails.status == 200) {
-				var xmldoc = loadXML(responseDetails.responseText);
+				try {
+					var xmldoc = loadXML(responseDetails.responseText);
+				} catch (e) {
+					return;
+				}
 				var durls = xmldoc.getElementsByTagName("durl");
 				console.log(durls);
 				var playlist = [];
