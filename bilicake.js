@@ -69,7 +69,7 @@ function api_get_cid(aid, page) {
 	});
 }
 */
-
+var pid=1;
 
 function api_get_cid(aid, page) {
 	console.log("api_get_cid("+aid+", "+page+")");
@@ -83,10 +83,12 @@ function api_get_cid(aid, page) {
 			if (responseDetails.status == 200) {
 				var Content = eval('(' + responseDetails.responseText + ')');
 				var list = Content.list;
-				var p = page - 1;
+				pid = page;
 				var lp = null;
 				for (var i=0;i<list.length;++i)
-					if (list[i].page == p) lp = list[i];
+					if (list[i].page == 0) {--pid;break;}
+				for (var i=0;i<list.length;++i)
+					if (list[i].page == pid) lp = list[i];
 				if (lp === null) lp = list[0]; //针对某些aid只有一个cid但是有分P的情况
 				cid = lp.cid;
 				var type = lp.type;
@@ -125,13 +127,57 @@ function api_get_url(cid, quality) {
 					playlist.push({"sources":{"video/mp4":durls[i].getElementsByTagName("url")[0].firstChild.nodeValue}});
 				}
 				console.log(playlist);
-				window.inst = ABP.create(document.getElementById("bofqi"), {
+				var inst = ABP.create(document.getElementById("bofqi"), {
 					"src":{
 						"playlist":playlist,
 						"danmaku":'http://comment.bilibili.com/' + cid + '.xml',
 					},
 					"width":1160,
 					"height":640
+				});
+				//
+				window.inst = inst;
+				var sddm = function(dm) {
+					dm.stime += 500;
+					var t = parseFloat(dm.stime/1000).toFixed(3);
+					var d = new Date(dm.date*1000);
+					var pad0 = function(num, n) {  
+						var len = num.toString().length;  
+						while(len < n) {  
+							num = "0" + num;  
+							len++;  
+						}  
+						return num;  
+					};
+					console.log(d);
+					var dtstr = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+pad0(d.getMinutes(),2)+":"+pad0(d.getSeconds(),2);
+					console.log(dtstr);
+					var str = "date="+encodeURIComponent(dtstr)+"&fontsize="+dm.size+"&message="+encodeURIComponent(dm.text)+"&rnd="+parseInt(1000000000*Math.random())+"&mode="+dm.mode+"&cid="+cid+"&pool=0&playTime="+encodeURIComponent(""+t)+"&color="+dm.color;
+					console.log(str);
+					GM_xmlhttpRequest({
+						method: 'POST',
+						url: "http://interface.bilibili.com/dmpost?cid="+cid+"&aid="+aid+"&pid="+pid,
+						headers: {
+							"Referer": "http://static.hdslb.com/play.swf",
+							"Content-Type": "application/x-www-form-urlencoded"
+						},
+						data: str,
+						synchronous: false,
+						onload: function(responseDetails) {
+							if (responseDetails.status == 200) {
+								console.log(responseDetails.responseText);
+							}
+						}
+					});
+				};
+				inst.addListener("senddanmaku",function(dm){
+					if (inst.playing) {
+						inst.dmsend(dm);
+						setTimeout(function(){sddm(dm);}, 1000);
+					} else {
+						inst.dmsend(dm);
+						sddm(dm);
+					}
 				});
 			}
 		}
