@@ -85,25 +85,22 @@ function api_get_cid(aid, page) {
 				var list = Content.list;
 				pid = page;
 				var lp = null;
-				for (var i=0;i<list.length;++i)
-					if (list[i].page == 0) {--pid;break;}
+				//
+				if (document.getElementById("bofqi").innerHTML.match(/Copyright/)) --pid;
 				for (var i=0;i<list.length;++i)
 					if (list[i].page == pid) lp = list[i];
 				if (lp === null) lp = list[0]; //针对某些aid只有一个cid但是有分P的情况
 				cid = lp.cid;
 				var type = lp.type;
 				var vid = lp.vid;
-				console.log("aid: "+aid+" cid: "+cid+" type: "+type+" vid: "+vid);
-				if (type == "vupload") api_get_url(cid); 
+				console.log("aid: "+aid+" pid: "+pid+" cid: "+cid+" type: "+type+" vid: "+vid);
+				if (type == "vupload" || type == "qq") api_get_url(cid); 
 			}
 		}
 	});
 }
 
 
-window.replacePlayer = function() {
-	if (cid != "") api_get_url(cid);
-};
 
 function api_get_url(cid, quality) {
 	if (typeof quality == "undefined") var quality = 4;
@@ -124,7 +121,11 @@ function api_get_url(cid, quality) {
 				console.log(durls);
 				var playlist = [];
 				for (var i=0;i<durls.length;i++) {
-					playlist.push({"sources":{"video/mp4":durls[i].getElementsByTagName("url")[0].firstChild.nodeValue}});
+					playlist.push({"sources":{
+						"video/mp4":(durls[i].getElementsByTagName("url").length <= 1)
+						?durls[i].getElementsByTagName("url")[0].firstChild.nodeValue
+						:durls[i].getElementsByTagName("url")[1].firstChild.nodeValue
+					}});
 				}
 				console.log(playlist);
 				var inst = ABP.create(document.getElementById("bofqi"), {
