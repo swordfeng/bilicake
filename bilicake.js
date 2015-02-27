@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        bilicake
 // @namespace   bilicake
-// @desription	black tehnology
+// @description	black technology
 // @include     *bilibili.com*
 // @version     0.03
 // @run-at      document-end
