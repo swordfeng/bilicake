@@ -3,17 +3,17 @@
 // @namespace   bilicake
 // @desription	black tehnology
 // @include     *bilibili.com*
-// @version     0.02
+// @version     0.03
 // @run-at      document-end
 // @grant       GM_xmlhttpRequest
 // @require     http://swordfeng.github.io/ABP/js/CommentCoreLibrary.min.js
 // @require     http://swordfeng.github.io/ABP/js/md5.js
-// @require     http://swordfeng.github.io/ABP/js/ABPRestyle.js
 // @require     http://swordfeng.github.io/ABP/js/ABPMobile.js
 // @require     http://swordfeng.github.io/ABP/js/ABPLibxml.js
-// @require     http://swordfeng.github.io/ABP/js/ABPlayer.js?id=1
+// @require     http://swordfeng.github.io/ABP/js/ABPlayer.js?id=3
 // ==/UserScript==
 
+// require     http://swordfeng.github.io/ABP/js/ABPRestyle.js
 
 
 
@@ -94,6 +94,7 @@ function api_get_cid(aid, page) {
 				var type = lp.type;
 				var vid = lp.vid;
 				console.log("aid: "+aid+" pid: "+pid+" cid: "+cid+" type: "+type+" vid: "+vid);
+				console.log("http://interface.bilibili.com/playurl?"+sign_req("appkey="+appkey+"&cid="+cid+"&type=mp4&quality="+4));
 				if (type == "vupload" || type == "qq") api_get_url(cid); 
 			}
 		}
