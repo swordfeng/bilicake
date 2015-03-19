@@ -3,7 +3,7 @@
 // @namespace   bilicake
 // @description	black technology
 // @include     *bilibili.com*
-// @version     0.03
+// @version     0.04
 // @run-at      document-end
 // @grant       GM_xmlhttpRequest
 // @require     http://swordfeng.github.io/ABP/js/CommentCoreLibrary.min.js
@@ -25,7 +25,7 @@ document.getElementsByTagName("head")[0].appendChild(cakecss);
 
 cakecss = document.createElement('style');
 cakecss.setAttribute("type","text/css");
-cakecss.innerHTML = ".ABP-NoScroll #index-nav { display:none!important; }";
+cakecss.innerHTML = ".ABP-NoScroll #index-nav { display:none!important; }\n.ABP-NoScroll .z-index { display:none!important; }";
 document.getElementsByTagName("head")[0].appendChild(cakecss);
 
 
