@@ -25,7 +25,7 @@ document.getElementsByTagName("head")[0].appendChild(cakecss);
 
 cakecss = document.createElement('style');
 cakecss.setAttribute("type","text/css");
-cakecss.innerHTML = ".ABP-NoScroll #index-nav { display:none!important; }\n.ABP-NoScroll .z-index { display:none!important; }";
+cakecss.innerHTML = ".ABP-NoScroll #index-nav { display:none!important; }\n.ABP-NoScroll .z-top { display:none!important; }";
 document.getElementsByTagName("head")[0].appendChild(cakecss);
 
 
